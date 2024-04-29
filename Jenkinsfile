@@ -1,62 +1,102 @@
 pipeline {
     agent any
+
+    environment {
+        // Define your environment variables here
+        STAGING_SERVER = 'staging.example.com'
+        PRODUCTION_SERVER = 'production.example.com'
+        RECIPIENT_EMAIL = 'dev-team@example.com'
+    }
+
     stages {
-        // ... other stages ...
+        stage('Build') {
+            steps {
+                echo 'Building the project...'
+                // The command to build your project, e.g., 'mvn clean package'
+                sh 'echo "Maven: mvn clean package"'
+            }
+        }
 
         stage('Unit and Integration Tests') {
             steps {
-                // ... test commands ...
+                echo 'Running tests...'
+                // The command to run your tests, e.g., 'mvn test'
+                sh 'echo "Testing tools: JUnit for unit tests, Mockito for integration tests"'
             }
             post {
-                success {
+                always {
+                    // Send email notification after tests
                     emailext(
-                        to: 'mankaran89@gmail.com',
-                        subject: "SUCCESS: Integration Tests Passed - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                        body: """<p>Good news, the integration tests passed!</p>
-                                 <p>Check out the logs attached for more details.</p>""",
-                        attachLog: true
-                    )
-                }
-                failure {
-                    emailext(
-                        to: 'mankaran89@gmail.com',
-                        subject: "FAILURE: Integration Tests Failed - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                        body: """<p>Uh oh, the integration tests failed.</p>
-                                 <p>See the attached logs for debugging.</p>""",
+                        subject: "Jenkins Build #${BUILD_NUMBER} - Tests: ${currentBuild.currentResult}",
+                        body: "Please see the attached logs for more details.",
+                        to: "${RECIPIENT_EMAIL}",
                         attachLog: true
                     )
                 }
             }
         }
 
-        // ... other stages ...
+        stage('Code Analysis') {
+            steps {
+                echo 'Analyzing code...'
+                // The command to analyze your code, e.g., SonarQube analysis
+                sh 'echo "Code Analysis tool: SonarQube"'
+            }
+        }
 
         stage('Security Scan') {
             steps {
-                // ... security scan commands ...
+                echo 'Performing security scan...'
+                // The command to perform security scan, e.g., using OWASP Dependency Check
+                sh 'echo "Security Scan tool: OWASP Dependency Check"'
             }
             post {
-                success {
+                always {
+                    // Send email notification after security scan
                     emailext(
-                        to: 'mankaran89@gmail.com',
-                        subject: "SUCCESS: Security Scan Passed - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                        body: """<p>Great, the security scan passed!</p>
-                                 <p>Attached are the logs for your review.</p>""",
-                        attachLog: true
-                    )
-                }
-                failure {
-                    emailext(
-                        to: 'mankaran89@gmail.com',
-                        subject: "FAILURE: Security Scan Failed - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                        body: """<p>Alert: The security scan has failed.</p>
-                                 <p>Please review the attached logs.</p>""",
+                        subject: "Jenkins Build #${BUILD_NUMBER} - Security Scan: ${currentBuild.currentResult}",
+                        body: "Please see the attached logs for more details.",
+                        to: "${RECIPIENT_EMAIL}",
                         attachLog: true
                     )
                 }
             }
         }
+
+        stage('Deploy to Staging') {
+            steps {
+                echo 'Deploying to staging environment...'
+                // Simulate a deployment to a staging server
+                sh "echo 'Deploying to ${STAGING_SERVER}'"
+            }
+        }
+
+        stage('Integration Tests on Staging') {
+            steps {
+                echo 'Running integration tests on staging...'
+                // Simulate running integration tests in the staging environment
+                sh 'echo "Running integration tests on staging server"'
+            }
+        }
+
+        stage('Deploy to Production') {
+            steps {
+                echo 'Deploying to production environment...'
+                // Simulate a deployment to a production server
+                sh "echo 'Deploying to ${PRODUCTION_SERVER}'"
+            }
+        }
+    }
+
+    post {
+        failure {
+            // Send email notification for any failed stage in the pipeline
+            emailext(
+                subject: "Jenkins Build #${BUILD_NUMBER} - Failed",
+                body: "Unfortunately, the build has failed. Please check the Jenkins logs for more information.",
+                to: "${RECIPIENT_EMAIL}",
+                attachLog: true
+            )
+        }
     }
 }
-
-
