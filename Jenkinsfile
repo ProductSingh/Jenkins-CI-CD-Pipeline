@@ -39,7 +39,7 @@ pipeline {
         stage('Code Analysis') {
             steps {
                 echo 'Analyzing code...'
-                // The command to analyze your code, e.g., SonarQube analysis
+                // The command to analyze  code, e.g., SonarQube analysis
                 sh 'echo "Code Analysis tool: SonarQube"'
             }
         }
