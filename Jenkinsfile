@@ -4,8 +4,8 @@ pipeline {
     environment {
         // Define your environment variables here
         STAGING_SERVER = 'staging.example.com'
-        PRODUCTION_SERVER = 'production.example.com'
-        RECIPIENT_EMAIL = 'dev-team@example.com'
+        PRODUCTION_SERVER = 's223497151.com'
+        RECIPIENT_EMAIL = 'mankaran89@gmail.com'
     }
 
     stages {
