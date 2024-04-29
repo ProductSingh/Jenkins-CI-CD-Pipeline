@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        // Define your environment variables here
-        STAGING_SERVER = 'staging.example.com'
+        // Defining environment variables here
+        STAGING_SERVER = 'AWS_EC2_staging.example.com'
         PRODUCTION_SERVER = 's223497151.com'
         RECIPIENT_EMAIL = 'mankaran89@gmail.com'
     }
@@ -12,7 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the project...'
-                // The command to build your project, e.g., 'mvn clean package'
+                // The command to build project, e.g., 'mvn clean package'
                 sh 'echo "Maven: mvn clean package"'
             }
         }
@@ -20,12 +20,12 @@ pipeline {
         stage('Unit and Integration Tests') {
             steps {
                 echo 'Running tests...'
-                // The command to run your tests, e.g., 'mvn test'
+                // The command to run tests, e.g., 'mvn test'
                 sh 'echo "Testing tools: JUnit for unit tests, Mockito for integration tests"'
             }
             post {
                 always {
-                    // Send email notification after tests
+                    // Send email notification after tests (part of tasksheet)
                     emailext(
                         subject: "Jenkins Build #${BUILD_NUMBER} - Tests: ${currentBuild.currentResult}",
                         body: "Please see the attached logs for more details.",
@@ -52,7 +52,7 @@ pipeline {
             }
             post {
                 always {
-                    // Send email notification after security scan
+                    // Send email notification after security scan (part of tasksheet)
                     emailext(
                         subject: "Jenkins Build #${BUILD_NUMBER} - Security Scan: ${currentBuild.currentResult}",
                         body: "Please see the attached logs for more details.",
